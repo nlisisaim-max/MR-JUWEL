@@ -10,10 +10,10 @@ const leaveData = {};
 
 function frame(msg) {
   return `
-   ╔══════════════════╗   
-   ☢️ ANTI OUT SYSTEM⚠️   
-   ╠══════════════════╣   
-   ${msg}   
+   ╔══════════════════╗
+   ☢️ ANTI OUT SYSTEM ⚠️
+   ╠══════════════════╣
+   ${msg}
    ╚══════════════════╝`;
 }
 
@@ -26,12 +26,11 @@ module.exports.run = async function ({ event, api, Threads, Users }) {
     if (data.antiout === false) return;
 
     if (leftID == api.getCurrentUserID()) return;
+    if (event.author != leftID) return;
 
     let name =
       global.data.userName.get(String(leftID)) ||
       await Users.getNameUser(leftID.toString());
-
-    if (event.author != leftID) return;
 
     if (!leaveData[leftID]) {
       leaveData[leftID] = {
@@ -49,18 +48,17 @@ module.exports.run = async function ({ event, api, Threads, Users }) {
 
     user.count++;
 
-    // ❌ 3rd time - permanent ban
+    // المرة الثالثة
     if (user.count >= 3) {
-
-      let msg = frame(`
-😆 ${name}!! ৩ বার লিভ দিলি তুই!
-🚫 এই গুপে তোর আর ঢুকতে দেওয়া হবে না!🛑
-😎 যা যা... সলো লাইফ এনজয় কর!✌️`);
-
-      api.sendMessage(msg, threadID);
+      api.sendMessage(
+        frame(`
+😆 ${name}!! خرجتي 3 مرات!
+🚫 ما غاديش نحاول نرجعك مرة أخرى! 🛑
+😎 سولو لايف! ✌️`),
+        threadID
+      );
 
       try {
-        const time = new Date().toLocaleString("en-GB", { timeZone: "Asia/Dhaka" });
         let threadInfo = await Threads.getInfo(threadID);
         let threadName = threadInfo.threadName || "Unknown Group";
 
@@ -74,7 +72,6 @@ module.exports.run = async function ({ event, api, Threads, Users }) {
         for (let admin of adminUIDs) {
           api.sendMessage(adminMsg, admin);
         }
-
       } catch (e) {
         console.log("Forward Error:", e);
       }
@@ -82,32 +79,30 @@ module.exports.run = async function ({ event, api, Threads, Users }) {
       return;
     }
 
-    // ✅ 1st and 2nd time - re-add
+    // المرة الأولى والثانية
     api.addUserToGroup(leftID, threadID, async (err) => {
       if (err) {
-
-        let msg = frame(`
-😱 ${name}!! তোকে এড করতে পারলাম না!
-🔒 বট ব্লক নাকি প্রাইভেসি? 🤔`);
-
-        api.sendMessage(msg, threadID);
+        api.sendMessage(
+          frame(`
+😱 ${name}!! مقدرتش نرجعك!
+🔒 تحقق من إعدادات الخصوصية ديالك.`),
+          threadID
+        );
 
         try {
-          const time = new Date().toLocaleString("en-GB", { timeZone: "Asia/Dhaka" });
           let threadInfo = await Threads.getInfo(threadID);
           let threadName = threadInfo.threadName || "Unknown Group";
 
           let adminMsg = `
 🚨 FAILED TO RE-ADD 🚨
 👤 ${name} | UID: ${leftID}
-🏷️ ${threadName} | 🕒 ${time}`;
+🏷️ ${threadName}`;
 
           const adminUIDs = ["61591646430352", "61591542717221"];
 
           for (let admin of adminUIDs) {
             api.sendMessage(adminMsg, admin);
           }
-
         } catch (e) {
           console.log("Forward Error:", e);
         }
@@ -115,25 +110,12 @@ module.exports.run = async function ({ event, api, Threads, Users }) {
         return;
       }
 
-      // 🎯 Short funny captions
-      let msg;
-      if (user.count === 1) {
-        msg = frame(`
-😏 ${name}!! পালানোর চেষ্টা করছিস?
-🔄 আবার গুপে এড করা হলো! 🤖
-⚠️ আর ২ বার বাকি... সাবধান!`);
-
-      } else if (user.count === 2) {
-        msg = frame(`
-😆 ${name}!! আবার পালালি?
-🔄 আবার গুপে এড করা হলো! 🤖
-💀 শেষবার... আর ১ বার বাকি!`);
-      }
-
-      api.sendMessage(msg, threadID);
+      api.sendMessage(
+        "رجع رجع سحتوت مبغاكش تخرج🍆👌🏻",
+        threadID
+      );
 
       try {
-        const time = new Date().toLocaleString("en-GB", { timeZone: "Asia/Dhaka" });
         let threadInfo = await Threads.getInfo(threadID);
         let threadName = threadInfo.threadName || "Unknown Group";
 
@@ -147,11 +129,9 @@ module.exports.run = async function ({ event, api, Threads, Users }) {
         for (let admin of adminUIDs) {
           api.sendMessage(adminMsg, admin);
         }
-
       } catch (e) {
         console.log("Forward Error:", e);
       }
-
     });
 
   } catch (e) {
